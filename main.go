@@ -1,7 +1,13 @@
 package main
 
-import _ "github.com/dgrinbergs/universal-music-library/config"
+import (
+	"log"
+
+	"github.com/dgrinbergs/universal-music-library/cmd"
+)
 
 func main() {
-
+	if err := cmd.Execute(); err != nil {
+		log.Fatal(err)
+	}
 }
