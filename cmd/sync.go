@@ -61,8 +61,15 @@ var syncCmd = &cobra.Command{
 
 		if syncSavedTracks {
 			slog.Info("Syncing saved tracks", "from", src.Name(), "to", dst.Name())
-			// TODO: implement saved tracks sync
-			return fmt.Errorf("saved tracks sync not yet implemented")
+
+			tracks, err := src.GetSavedTracks(ctx)
+			if err != nil {
+				return fmt.Errorf("fetching saved tracks from %s: %w", src.Name(), err)
+			}
+
+			if err := dst.SaveTracks(ctx, tracks); err != nil {
+				return fmt.Errorf("saving tracks to %s: %w", dst.Name(), err)
+			}
 		}
 
 		return nil

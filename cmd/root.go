@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	_ "github.com/dgrinbergs/universal-music-library/config"
+	_ "github.com/dgrinbergs/universal-music-library/providers/applemusic"
 	_ "github.com/dgrinbergs/universal-music-library/providers/spotify"
 )
 

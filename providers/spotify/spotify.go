@@ -103,3 +103,22 @@ func (p *Provider) CreatePlaylist(ctx context.Context, name string, tracks []mus
 	slog.Info("Created playlist", "name", name, "tracks", len(uris))
 	return nil
 }
+
+func (p *Provider) SaveTracks(ctx context.Context, tracks []music.Track) error {
+	ids := make([]string, 0, len(tracks))
+	for _, t := range tracks {
+		found, err := searchTrack(t)
+		if err != nil {
+			slog.Warn("Track not found on Spotify", "track", t.Title, "artist", t.Artist)
+			continue
+		}
+		ids = append(ids, found.ID)
+	}
+
+	if err := saveToLibrary(ids); err != nil {
+		return fmt.Errorf("saving tracks to library: %w", err)
+	}
+
+	slog.Info("Saved tracks to library", "count", len(ids))
+	return nil
+}

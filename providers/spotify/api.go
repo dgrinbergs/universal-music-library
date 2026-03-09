@@ -257,3 +257,37 @@ func addTracksToPlaylist(playlistID string, uris []string) error {
 	}
 	return nil
 }
+
+func saveToLibrary(ids []string) error {
+	// Spotify allows max 50 IDs per request
+	for i := 0; i < len(ids); i += 50 {
+		end := min(i+50, len(ids))
+		token, err := getAccessToken()
+		if err != nil {
+			return err
+		}
+
+		data, err := json.Marshal(map[string][]string{"ids": ids[i:end]})
+		if err != nil {
+			return err
+		}
+
+		req, err := http.NewRequest("PUT", apiBase+"/me/tracks", bytes.NewReader(data))
+		if err != nil {
+			return err
+		}
+		req.Header.Set("Authorization", "Bearer "+token)
+		req.Header.Set("Content-Type", "application/json")
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
+		resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			return fmt.Errorf("spotify API error %d saving tracks", resp.StatusCode)
+		}
+	}
+	return nil
+}

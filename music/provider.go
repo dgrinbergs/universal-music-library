@@ -12,6 +12,7 @@ type Provider interface {
 	GetSavedTracks(ctx context.Context) ([]Track, error)
 	SearchTrack(ctx context.Context, track Track) (*Track, error)
 	CreatePlaylist(ctx context.Context, name string, tracks []Track) error
+	SaveTracks(ctx context.Context, tracks []Track) error
 }
 
 var providers = map[string]Provider{}
